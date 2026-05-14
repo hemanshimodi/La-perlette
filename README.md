@@ -634,8 +634,4 @@ If you like this project:
 
 
 
-</div>
 
-...
-
-[Message clipped]  View entire message
