@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Perlette | Checkout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pink: {
+              light: '#FFD4E5',
+              DEFAULT: '#FFB6D9',
+              dark: '#F5A3C7',
+              muted: '#FFF0F5'
+            },
+            gold: {
+              light: '#F0E68C',
+              DEFAULT: '#D4AF37',
+              dark: '#B8962E'
+            },
+            cream: '#FFFAF0',
+            charcoal: '#333333'
+          },
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'serif'],
+            sans: ['Montserrat', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .gold-gradient {
+      background: linear-gradient(135deg, #D4AF37 0%, #F0E68C 50%, #D4AF37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .btn-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-shimmer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    .btn-shimmer:hover::before {
+      left: 100%;
+    }
+    .input-focus:focus {
+      border-color: #D4AF37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+    .radio-checked {
+      border-color: #D4AF37;
+      background-color: #FFF0F5;
+    }
+
+    /* Gooey Background Styles */
+    .gooey-wrapper {
+      --color-bg1: rgb(255, 240, 245);
+      --color-bg2: rgb(255, 214, 232);
+      --color1: 255, 182, 217;
+      --color2: 255, 250, 240;
+      --color3: 255, 232, 240;
+      --color4: 255, 255, 255;
+      --color5: 245, 163, 199;
+      --color-interactive: 255, 182, 217;
+      --circle-size: 80%;
+      --blending: normal;
+    }
+    @keyframes moveInCircle {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes moveVertical {
+      0% { transform: translateY(-50%); }
+      50% { transform: translateY(50%); }
+      100% { transform: translateY(-50%); }
+    }
+    @keyframes moveHorizontal {
+      0% { transform: translateX(-50%) translateY(-10%); }
+      50% { transform: translateX(50%) translateY(10%); }
+      100% { transform: translateX(-50%) translateY(-10%); }
+    }
+    .gradient-bg {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      overflow: hidden;
+      background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .gradient-bg svg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+    }
+    .gradients-container {
+      filter: url(#goo) blur(40px);
+      width: 100%;
+      height: 100%;
+    }
+    .g1, .g2, .g3, .g4, .g5, .interactive {
+      position: absolute;
+      mix-blend-mode: var(--blending);
+      opacity: 1;
+    }
+    .g1 {
+      background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color1), 0) 50%) no-repeat;
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2);
+      left: calc(50% - var(--circle-size) / 2);
+      transform-origin: center center;
+      animation: moveVertical 30s ease infinite;
+    }
+    .g2 {
+      background: radial-gradient(circle at center, rgba(var(--color2), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2);
+      left: calc(50% - var(--circle-size) / 2);
+      transform-origin: calc(50% - 400px);
+      animation: moveInCircle 20s reverse infinite;
+    }
+    .g3 {
+      background: radial-gradient(circle at center, rgba(var(--color3), 0.8) 0, rgba(var(--color3), 0) 50%) no-repeat;
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2 + 200px);
+      left: calc(50% - var(--circle-size) / 2 - 500px);
+      transform-origin: calc(50% + 400px);
+      animation: moveInCircle 40s linear infinite;
+    }
+    .g4 {
+      background: radial-gradient(circle at center, rgba(var(--color4), 0.8) 0, rgba(var(--color4), 0) 50%) no-repeat;
+      width: var(--circle-size);
+      height: var(--circle-size);
+      top: calc(50% - var(--circle-size) / 2);
+      left: calc(50% - var(--circle-size) / 2);
+      transform-origin: calc(50% - 200px);
+      animation: moveHorizontal 40s ease infinite;
+      opacity: 0.7;
+    }
+    .g5 {
+      background: radial-gradient(circle at center, rgba(var(--color5), 0.8) 0, rgba(var(--color5), 0) 50%) no-repeat;
+      width: calc(var(--circle-size) * 2);
+      height: calc(var(--circle-size) * 2);
+      top: calc(50% - var(--circle-size));
+      left: calc(50% - var(--circle-size));
+      transform-origin: calc(50% - 800px) calc(50% + 200px);
+      animation: moveInCircle 20s ease infinite;
+    }
+    .interactive {
+      background: radial-gradient(circle at center, rgba(var(--color-interactive), 0.8) 0, rgba(var(--color-interactive), 0) 50%) no-repeat;
+      width: 100%;
+      height: 100%;
+      top: -50%;
+      left: -50%;
+      opacity: 0.7;
+    }
+  </style>
+  <style>sd-component { display: block; }</style>
+  <script src="https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.iife.js" defer init></script>
+</head>
+<body>
+  <div class="min-h-screen gooey-wrapper font-sans text-charcoal relative">
+    
+    <!-- Gooey Background -->
+    <div class="gradient-bg">
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+            <feBlend in="SourceGraphic" in2="goo" />
+          </filter>
+        </defs>
+      </svg>
+      <div class="gradients-container">
+        <div class="g1"></div>
+        <div class="g2"></div>
+        <div class="g3"></div>
+        <div class="g4"></div>
+        <div class="g5"></div>
+        <div id="interactive-blob" class="interactive"></div>
+      </div>
+    </div>
+
+    <!-- Content Layer -->
+    <div class="relative z-10 w-full">
+    
+    <!-- Header/Navigation -->
+    <!-- component: NavigationHeader (fcf491af-0351-4b00-93d7-888574d98d8f) -->
+<div v-scope="{ ...{&quot;activeItem&quot;:&quot;customizer&quot;,&quot;homeHref&quot;:&quot;homepage.html&quot;,&quot;shopHref&quot;:&quot;homepage.html&quot;,&quot;customizerHref&quot;:&quot;customizer.html&quot;,&quot;aboutHref&quot;:&quot;#about&quot;,&quot;contactHref&quot;:&quot;#contact&quot;,&quot;cartHref&quot;:&quot;checkout.html&quot;,&quot;cartCount&quot;:0}, $emit() {} }">
+<header class="fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-pink-light/30">
+  <nav class="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <a :href="homeHref" class="flex items-center gap-2 group">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
+        <iconify-icon icon="lucide:gem" class="text-white text-xl"></iconify-icon>
+      </div>
+      <span class="font-serif text-2xl font-semibold tracking-wide">
+        <span class="text-charcoal">La Perlette</span>
+        <span class="gold-gradient">.</span>
+      </span>
+    </a>
+    
+    <!-- Nav Links -->
+    <div class="flex items-center gap-10">
+      <a :href="shopHref" 
+         :class="{ 'text-gold after:w-full': activeItem === 'shop', 'text-charcoal/70': activeItem !== 'shop' }"
+         class="font-sans text-sm font-medium hover:text-gold transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-gold after:transition-all hover:after:w-full">Shop</a>
+      <a :href="customizerHref" 
+         :class="{ 'text-gold after:w-full': activeItem === 'customizer', 'text-charcoal/70': activeItem !== 'customizer' }"
+         class="font-sans text-sm font-medium hover:text-gold transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-gold after:transition-all hover:after:w-full">Customizer</a>
+      <a :href="aboutHref" 
+         :class="{ 'text-gold after:w-full': activeItem === 'about', 'text-charcoal/70': activeItem !== 'about' }"
+         class="font-sans text-sm font-medium hover:text-gold transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-gold after:transition-all hover:after:w-full">About</a>
+      <a :href="contactHref" 
+         :class="{ 'text-gold after:w-full': activeItem === 'contact', 'text-charcoal/70': activeItem !== 'contact' }"
+         class="font-sans text-sm font-medium hover:text-gold transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-gold after:transition-all hover:after:w-full">Contact</a>
+    </div>
+    
+    <!-- Actions -->
+    <div class="flex items-center gap-6">
+      <button @click="$emit('search')" class="text-charcoal/70 hover:text-gold transition-colors">
+        <iconify-icon icon="lucide:search" class="text-xl"></iconify-icon>
+      </button>
+      <button @click="$emit('wishlist')" class="text-charcoal/70 hover:text-gold transition-colors">
+        <iconify-icon icon="lucide:heart" class="text-xl"></iconify-icon>
+      </button>
+      <a :href="cartHref" class="relative text-charcoal/70 hover:text-gold transition-colors">
+        <iconify-icon icon="lucide:shopping-bag" class="text-xl"></iconify-icon>
+        <span v-if="cartCount > 0" class="absolute -top-2 -right-2 w-5 h-5 bg-pink rounded-full flex items-center justify-center text-xs font-semibold text-charcoal">{{ cartCount }}</span>
+      </a>
+    </div>
+  </nav>
+</header>
+</div>
+<!-- /component: NavigationHeader (fcf491af-0351-4b00-93d7-888574d98d8f) -->
+    
+    <!-- Main Content -->
+    <main class="pt-28 pb-16">
+      <div class="max-w-6xl mx-auto px-8">
+        
+        <!-- Progress Indicator -->
+        <div class="mb-12">
+          <div class="flex items-center justify-center gap-4">
+            <!-- Step 1: Customize -->
+            <a id="progress-customize-link" href="customizer.html" class="flex items-center gap-2 group">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
+                <iconify-icon icon="lucide:check" class="text-gold text-lg"></iconify-icon>
+              </div>
+              <span class="text-sm font-medium text-charcoal/50 group-hover:text-gold transition-colors">Customize</span>
+            </a>
+            
+            <div class="w-16 h-[2px] bg-gold/30"></div>
+            
+            <!-- Step 2: Review -->
+            <a id="progress-review-link" href="customizer.html" class="flex items-center gap-2 group">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
+                <iconify-icon icon="lucide:check" class="text-gold text-lg"></iconify-icon>
+              </div>
+              <span class="text-sm font-medium text-charcoal/50 group-hover:text-gold transition-colors">Review</span>
+            </a>
+            
+            <div class="w-16 h-[2px] bg-gold"></div>
+            
+            <!-- Step 3: Checkout (Active) -->
+            <div class="flex items-center gap-2">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center shadow-lg shadow-gold/25">
+                <span class="text-white font-semibold text-sm">3</span>
+              </div>
+              <span class="text-sm font-semibold text-gold">Checkout</span>
+            </div>
+            
+            <div class="w-16 h-[2px] bg-pink-light"></div>
+            
+            <!-- Step 4: Confirmation -->
+            <div class="flex items-center gap-2">
+              <div class="w-10 h-10 rounded-full bg-pink-muted border-2 border-pink-light flex items-center justify-center">
+                <span class="text-charcoal/40 font-medium text-sm">4</span>
+              </div>
+              <span class="text-sm font-medium text-charcoal/40">Confirmation</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Page Title -->
+        <div class="text-center mb-10">
+          <h1 class="font-serif text-4xl font-semibold mb-2">Complete Your <span class="gold-gradient">Order</span></h1>
+          <p class="text-charcoal/60">Enter your shipping details and payment information</p>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="grid grid-cols-3 gap-10">
+          
+          <!-- Left Column: Forms -->
+          <div class="col-span-2 space-y-8">
+            
+            <!-- Shipping Information -->
+            <div class="bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-pink-light/40 shadow-sm">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-pink-muted flex items-center justify-center">
+                  <iconify-icon icon="lucide:map-pin" class="text-pink-dark text-lg"></iconify-icon>
+                </div>
+                <h2 class="font-serif text-2xl font-semibold">Shipping Address</h2>
+              </div>
+              
+              <form class="space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">First Name</label>
+                    <input type="text" id="firstName" placeholder="Emma" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">Last Name</label>
+                    <input type="text" id="lastName" placeholder="Sullivan" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                  </div>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Email Address</label>
+                  <input type="email" id="email" placeholder="emma@example.com" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Phone Number</label>
+                  <input type="tel" id="phone" placeholder="+1 (555) 123-4567" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Street Address</label>
+                  <input type="text" id="address" placeholder="123 Rose Garden Lane" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Apartment, Suite, etc. (Optional)</label>
+                  <input type="text" id="apartment" placeholder="Apt 4B" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all">
+                </div>
+                
+                <div class="grid grid-cols-3 gap-5">
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">City</label>
+                    <input type="text" id="city" placeholder="Los Angeles" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">State</label>
+                    <select id="state" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 text-charcoal/70 focus:outline-none transition-all appearance-none cursor-pointer">
+                      <option>California</option>
+                      <option>New York</option>
+                      <option>Texas</option>
+                      <option>Florida</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">ZIP Code</label>
+                    <input type="text" id="zip" placeholder="90210" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+            <!-- Delivery Options -->
+            <div class="bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-pink-light/40 shadow-sm">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center">
+                  <iconify-icon icon="lucide:truck" class="text-gold text-lg"></iconify-icon>
+                </div>
+                <h2 class="font-serif text-2xl font-semibold">Delivery Method</h2>
+              </div>
+              
+              <div class="space-y-4">
+                <!-- Standard Shipping -->
+                <label class="block cursor-pointer">
+                  <input type="radio" name="delivery" value="0" class="sr-only peer" checked>
+                  <div class="peer-checked:border-gold peer-checked:bg-pink-muted/50 flex items-center justify-between p-5 rounded-2xl border-2 border-pink-light/50 hover:border-pink transition-all">
+                    <div class="flex items-center gap-4">
+                      <div class="w-5 h-5 rounded-full border-2 border-pink-light peer-checked:border-gold flex items-center justify-center">
+                        <div class="w-2.5 h-2.5 rounded-full bg-gold hidden peer-checked:block"></div>
+                      </div>
+                      <div>
+                        <div class="font-semibold text-charcoal">Standard Shipping</div>
+                        <div class="text-sm text-charcoal/60">5-7 business days</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-semibold text-gold">FREE</div>
+                      <div class="text-xs text-charcoal/50">Orders ₹75+</div>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Express Shipping -->
+                <label class="block cursor-pointer">
+                  <input type="radio" name="delivery" value="12.99" class="sr-only peer">
+                  <div class="peer-checked:border-gold peer-checked:bg-pink-muted/50 flex items-center justify-between p-5 rounded-2xl border-2 border-pink-light/50 hover:border-pink transition-all">
+                    <div class="flex items-center gap-4">
+                      <div class="w-5 h-5 rounded-full border-2 border-pink-light flex items-center justify-center">
+                        <div class="w-2.5 h-2.5 rounded-full bg-gold hidden"></div>
+                      </div>
+                      <div>
+                        <div class="font-semibold text-charcoal">Express Shipping</div>
+                        <div class="text-sm text-charcoal/60">2-3 business days</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-semibold text-charcoal">₹12.99</div>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Overnight Shipping -->
+                <label class="block cursor-pointer">
+                  <input type="radio" name="delivery" value="24.99" class="sr-only peer">
+                  <div class="peer-checked:border-gold peer-checked:bg-pink-muted/50 flex items-center justify-between p-5 rounded-2xl border-2 border-pink-light/50 hover:border-pink transition-all">
+                    <div class="flex items-center gap-4">
+                      <div class="w-5 h-5 rounded-full border-2 border-pink-light flex items-center justify-center">
+                        <div class="w-2.5 h-2.5 rounded-full bg-gold hidden"></div>
+                      </div>
+                      <div>
+                        <div class="font-semibold text-charcoal flex items-center gap-2">
+                          Overnight Delivery
+                          <span class="px-2 py-0.5 bg-pink text-xs font-medium rounded-full">Fastest</span>
+                        </div>
+                        <div class="text-sm text-charcoal/60">Next business day</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-semibold text-charcoal">₹24.99</div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Payment Section -->
+            <div class="bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-pink-light/40 shadow-sm">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-pink-muted flex items-center justify-center">
+                  <iconify-icon icon="lucide:credit-card" class="text-pink-dark text-lg"></iconify-icon>
+                </div>
+                <h2 class="font-serif text-2xl font-semibold">Payment Information</h2>
+              </div>
+              
+              <!-- Card Icons -->
+              <div class="flex items-center gap-3 mb-6">
+                <div class="px-3 py-2 bg-pink-muted/50 rounded-lg border border-pink-light/50">
+                  <iconify-icon icon="logos:visa" class="text-2xl"></iconify-icon>
+                </div>
+                <div class="px-3 py-2 bg-pink-muted/50 rounded-lg border border-pink-light/50">
+                  <iconify-icon icon="logos:mastercard" class="text-2xl"></iconify-icon>
+                </div>
+                <div class="px-3 py-2 bg-pink-muted/50 rounded-lg border border-pink-light/50">
+                  <iconify-icon icon="logos:amex" class="text-2xl"></iconify-icon>
+                </div>
+                <div class="px-3 py-2 bg-pink-muted/50 rounded-lg border border-pink-light/50">
+                  <iconify-icon icon="logos:paypal" class="text-2xl"></iconify-icon>
+                </div>
+              </div>
+              
+              <form class="space-y-5">
+                <div>
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Card Number</label>
+                  <div class="relative">
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" class="input-focus w-full px-4 py-3 pr-12 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                    <iconify-icon icon="lucide:lock" class="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal/30"></iconify-icon>
+                  </div>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Cardholder Name</label>
+                  <input type="text" id="cardName" placeholder="EMMA SULLIVAN" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-5">
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">Expiry Date</label>
+                    <input type="text" id="expiry" placeholder="MM/YY" class="input-focus w-full px-4 py-3 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-charcoal/70 mb-2">CVV</label>
+                    <div class="relative">
+                      <input type="text" id="cvv" placeholder="123" class="input-focus w-full px-4 py-3 pr-10 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 focus:outline-none transition-all" required>
+                      <iconify-icon icon="lucide:help-circle" class="absolute right-4 top-1/2 -translate-y-1/2 text-charcoal/30 cursor-help"></iconify-icon>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              
+              <!-- Security Badge -->
+              <div class="mt-6 flex items-center gap-2 text-sm text-charcoal/50">
+                <iconify-icon icon="lucide:shield-check" class="text-green-500"></iconify-icon>
+                <span>Your payment information is encrypted and secure</span>
+              </div>
+            </div>
+            
+          </div>
+          
+          <!-- Right Column: Order Summary -->
+          <div class="col-span-1">
+            <div class="sticky top-28">
+              <!-- Order Summary Card -->
+              <div class="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-pink-light/40 shadow-sm mb-6">
+                <h3 class="font-serif text-xl font-semibold mb-5">Order Summary</h3>
+                
+                <!-- Product Preview -->
+                <div id="orderProduct" class="flex items-start gap-4 pb-5 border-b border-pink-light/30 mb-5">
+                  <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-muted to-pink-light/50 flex items-center justify-center flex-shrink-0">
+                    <svg viewBox="0 0 60 60" class="w-14 h-14">
+                      <circle cx="30" cy="30" r="20" fill="none" stroke="#D4AF37" stroke-width="3"/>
+                      <circle cx="30" cy="10" r="4" fill="#FFB6D9"/>
+                      <circle cx="47" cy="20" r="3" fill="#D4AF37"/>
+                      <circle cx="50" cy="35" r="4" fill="#F0E68C"/>
+                      <circle cx="40" cy="48" r="3" fill="#FFD4E5"/>
+                      <circle cx="20" cy="48" r="4" fill="#D4AF37"/>
+                      <circle cx="10" cy="35" r="3" fill="#FFB6D9"/>
+                      <circle cx="13" cy="20" r="4" fill="#F0E68C"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold text-charcoal mb-1">Custom Dream Bracelet</div>
+                    <div id="orderDetails" class="text-sm text-charcoal/60 mb-2">Loading...</div>
+                    <div id="orderCounts" class="text-xs text-charcoal/50">Loading...</div>
+                  </div>
+                  <div id="orderSubtotal" class="font-semibold text-charcoal">₹0</div>
+                </div>
+                
+                <!-- Promo Code -->
+                <div class="mb-5">
+                  <label class="block text-sm font-medium text-charcoal/70 mb-2">Promo Code</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="promoInput" placeholder="Enter code" class="input-focus flex-1 px-4 py-2.5 rounded-xl border border-pink-light/50 bg-pink-muted/30 placeholder-charcoal/30 text-sm focus:outline-none transition-all">
+                    <button id="promoApplyBtn" class="px-4 py-2.5 bg-pink-muted border border-pink-light rounded-xl text-sm font-medium text-charcoal hover:bg-pink-light transition-colors">
+                      Apply
+                    </button>
+                  </div>
+                  <!-- Applied Code -->
+                  <div id="promoApplied" class="mt-3 flex items-center justify-between px-3 py-2 bg-green-50 rounded-lg border border-green-200" style="display:none">
+                    <div class="flex items-center gap-2">
+                      <iconify-icon icon="lucide:tag" class="text-green-600 text-sm"></iconify-icon>
+                      <span id="promoLabel" class="text-sm font-medium text-green-700">WELCOME15</span>
+                    </div>
+                    <button id="promoRemoveBtn" class="text-green-600 hover:text-green-700">
+                      <iconify-icon icon="lucide:x" class="text-sm"></iconify-icon>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Price Breakdown -->
+                <div class="space-y-3 pb-5 border-b border-pink-light/30 mb-5" id="priceBreakdown">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-charcoal/60">Subtotal</span>
+                    <span id="priceSubtotal" class="text-charcoal">₹0</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-charcoal/60">Gift Box</span>
+                    <span class="text-green-600">FREE</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-charcoal/60">Shipping</span>
+                    <span id="priceShipping" class="text-green-600">FREE</span>
+                  </div>
+                  <div id="discountRow" class="flex justify-between text-sm" style="display:none">
+                    <span class="text-charcoal/60">Discount (15%)</span>
+                    <span id="priceDiscount" class="text-green-600">-₹0</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-charcoal/60">Tax (8%)</span>
+                    <span id="priceTax" class="text-charcoal">₹0</span>
+                  </div>
+                </div>
+                
+                <!-- Total -->
+                <div class="flex justify-between items-center mb-6">
+                  <span class="font-semibold text-lg text-charcoal">Total</span>
+                  <span id="priceTotal" class="font-serif text-2xl font-semibold text-gold">₹0</span>
+                </div>
+                
+                <!-- Place Order Button -->
+                <button id="place-order-btn" type="button" class="btn-shimmer w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-gold to-gold-dark text-white font-medium rounded-full shadow-lg shadow-gold/25 hover:shadow-xl hover:shadow-gold/30 transition-all cursor-pointer border-none">
+                  <iconify-icon icon="lucide:lock" class="text-lg"></iconify-icon>
+                  <span>Place Secure Order</span>
+                </button>
+                
+                <!-- Back Link -->
+                <a id="back-to-review-link" href="customizer.html" class="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 text-charcoal/60 hover:text-gold font-medium transition-colors">
+                  <iconify-icon icon="lucide:arrow-left" class="text-lg"></iconify-icon>
+                  <span>Back to Review</span>
+                </a>
+              </div>
+              
+              <!-- Trust Badges -->
+              <div class="bg-pink-muted/50 rounded-2xl p-5 border border-pink-light/30">
+                <div class="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <div class="w-10 h-10 mx-auto rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
+                      <iconify-icon icon="lucide:shield-check" class="text-gold text-lg"></iconify-icon>
+                    </div>
+                    <div class="text-xs font-medium text-charcoal/70">Secure Payment</div>
+                  </div>
+                  <div>
+                    <div class="w-10 h-10 mx-auto rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
+                      <iconify-icon icon="lucide:refresh-cw" class="text-gold text-lg"></iconify-icon>
+                    </div>
+                    <div class="text-xs font-medium text-charcoal/70">30-Day Returns</div>
+                  </div>
+                  <div>
+                    <div class="w-10 h-10 mx-auto rounded-full bg-white flex items-center justify-center mb-2 shadow-sm">
+                      <iconify-icon icon="lucide:gift" class="text-gold text-lg"></iconify-icon>
+                    </div>
+                    <div class="text-xs font-medium text-charcoal/70">Gift Packaging</div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </main>
+    
+    <!-- Footer -->
+    <!-- component: Footer (07af8004-68f6-4da3-b68d-296218479f32) -->
+<div v-scope="{ ...{&quot;instagramHref&quot;:&quot;#&quot;,&quot;pinterestHref&quot;:&quot;#&quot;,&quot;tiktokHref&quot;:&quot;#&quot;,&quot;shopHref&quot;:&quot;homepage.html&quot;,&quot;customizerHref&quot;:&quot;customizer.html&quot;,&quot;collectionsHref&quot;:&quot;#collections&quot;,&quot;giftsHref&quot;:&quot;#gifts&quot;,&quot;sizingHref&quot;:&quot;#sizing&quot;,&quot;shippingHref&quot;:&quot;#shipping&quot;,&quot;returnsHref&quot;:&quot;#returns&quot;,&quot;faqHref&quot;:&quot;#faq&quot;,&quot;privacyHref&quot;:&quot;#privacy&quot;,&quot;termsHref&quot;:&quot;#terms&quot;,&quot;contactHref&quot;:&quot;#contact&quot;}, $emit() {} }">
+<footer id="contact" class="bg-charcoal text-white py-16">
+  <div class="max-w-7xl mx-auto px-8">
+    <div class="grid grid-cols-4 gap-12 mb-12">
+      <!-- Brand -->
+      <div class="col-span-1">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
+            <iconify-icon icon="lucide:gem" class="text-white text-xl"></iconify-icon>
+          </div>
+          <span class="font-serif text-2xl font-semibold">La Perlette</span>
+        </div>
+        <p class="text-white/60 text-sm leading-relaxed mb-6">Crafting personalized jewelry that tells your unique story. Each piece is made with love and attention to detail.</p>
+        <div class="flex items-center gap-4">
+          <a :href="instagramHref" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold transition-colors">
+            <iconify-icon icon="mdi:instagram" class="text-lg"></iconify-icon>
+          </a>
+          <a :href="pinterestHref" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold transition-colors">
+            <iconify-icon icon="mdi:pinterest" class="text-lg"></iconify-icon>
+          </a>
+          <a :href="tiktokHref" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold transition-colors">
+            <iconify-icon icon="ic:baseline-tiktok" class="text-lg"></iconify-icon>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Quick Links -->
+      <div>
+        <h4 class="font-semibold mb-6 text-gold">Quick Links</h4>
+        <ul class="space-y-3">
+          <li><a :href="shopHref" class="text-white/60 hover:text-gold transition-colors text-sm">Shop All</a></li>
+          <li><a :href="customizerHref" class="text-white/60 hover:text-gold transition-colors text-sm">Customizer</a></li>
+          <li><a :href="collectionsHref" class="text-white/60 hover:text-gold transition-colors text-sm">Collections</a></li>
+          <li><a :href="giftsHref" class="text-white/60 hover:text-gold transition-colors text-sm">Gift Cards</a></li>
+        </ul>
+      </div>
+      
+      <!-- Support -->
+      <div>
+        <h4 class="font-semibold mb-6 text-gold">Support</h4>
+        <ul class="space-y-3">
+          <li><a :href="sizingHref" class="text-white/60 hover:text-gold transition-colors text-sm">Sizing Guide</a></li>
+          <li><a :href="shippingHref" class="text-white/60 hover:text-gold transition-colors text-sm">Shipping Info</a></li>
+          <li><a :href="returnsHref" class="text-white/60 hover:text-gold transition-colors text-sm">Returns</a></li>
+          <li><a :href="faqHref" class="text-white/60 hover:text-gold transition-colors text-sm">FAQ</a></li>
+        </ul>
+      </div>
+      
+      <!-- Newsletter -->
+      <div>
+        <h4 class="font-semibold mb-6 text-gold">Stay Connected</h4>
+        <p class="text-white/60 text-sm mb-4">Subscribe for exclusive offers and new arrivals</p>
+        <form class="flex gap-2" @submit.prevent="$emit('subscribe')">
+          <input type="email" placeholder="Your email" class="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-sm placeholder-white/40 focus:outline-none focus:border-gold">
+          <button type="submit" class="px-6 py-3 bg-gold rounded-full text-sm font-medium hover:bg-gold-dark transition-colors">
+            <iconify-icon icon="lucide:send" class="text-lg"></iconify-icon>
+          </button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Bottom Bar -->
+    <div class="pt-8 border-t border-white/10 flex items-center justify-between">
+      <p class="text-white/40 text-sm">© 2024 La Perlette. All rights reserved. Hemanshi 25012011094</p>
+      <div class="flex items-center gap-6">
+        <a :href="privacyHref" class="text-white/40 hover:text-gold transition-colors text-sm">Privacy Policy</a>
+        <a :href="termsHref" class="text-white/40 hover:text-gold transition-colors text-sm">Terms of Service</a>
+        <a :href="contactHref" class="text-white/40 hover:text-gold transition-colors text-sm">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</footer>
+</div>
+<!-- /component: Footer (07af8004-68f6-4da3-b68d-296218479f32) -->
+    
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // === Gooey background animation ===
+      const interactive = document.getElementById('interactive-blob');
+      if (interactive) {
+        let curX=0,curY=0,tgX=0,tgY=0;
+        window.addEventListener('mousemove', e => { tgX=e.clientX; tgY=e.clientY; });
+        (function anim(){ curX+=(tgX-curX)/20; curY+=(tgY-curY)/20; interactive.style.transform=`translate(${Math.round(curX)}px,${Math.round(curY)}px)`; requestAnimationFrame(anim); })();
+      }
+
+      // === Load cart from localStorage ===
+      const cart = JSON.parse(localStorage.getItem('laperlette_cart') || 'null');
+      let subtotal = 0, shipping = 0, discount = 0, promoActive = false;
+
+      if (cart) {
+        subtotal = cart.subtotal || 0;
+        document.getElementById('orderDetails').textContent = `${cart.clasp?.name || 'Clasp'} · ${cart.size || '7"'}`;
+        document.getElementById('orderCounts').textContent = `${cart.beadCount || 0} beads · ${cart.charmCount || 0} charms`;
+        document.getElementById('orderSubtotal').textContent = '₹' + subtotal;
+      } else {
+        document.getElementById('orderDetails').textContent = 'No items in bag';
+        document.getElementById('orderCounts').textContent = 'Go back to customizer to add items';
+        document.getElementById('orderSubtotal').textContent = '₹0';
+      }
+
+      function updateTotals() {
+        const sel = document.querySelector('input[name="delivery"]:checked');
+        shipping = sel ? parseFloat(sel.value) : 0;
+        discount = promoActive ? Math.round(subtotal * 0.15) : 0;
+        const taxable = subtotal - discount + shipping;
+        const tax = Math.round(taxable * 0.08);
+        const total = taxable + tax;
+
+        document.getElementById('priceSubtotal').textContent = '₹' + subtotal;
+        document.getElementById('priceShipping').textContent = shipping === 0 ? 'FREE' : '₹' + shipping.toFixed(2);
+        document.getElementById('priceShipping').className = shipping === 0 ? 'text-green-600' : 'text-charcoal';
+        document.getElementById('discountRow').style.display = promoActive ? 'flex' : 'none';
+        document.getElementById('priceDiscount').textContent = '-₹' + discount;
+        document.getElementById('priceTax').textContent = '₹' + tax;
+        document.getElementById('priceTotal').textContent = '₹' + total;
+      }
+      updateTotals();
+
+      // === Shipping radio buttons ===
+      document.querySelectorAll('input[name="delivery"]').forEach(r => {
+        r.addEventListener('change', updateTotals);
+      });
+
+      // === Promo code ===
+      const validCodes = { 'WELCOME15': 15, 'PEARL10': 10, 'LOVE20': 20 };
+      document.getElementById('promoApplyBtn').addEventListener('click', () => {
+        const code = document.getElementById('promoInput').value.trim().toUpperCase();
+        if (validCodes[code]) {
+          promoActive = true;
+          document.getElementById('promoLabel').textContent = code;
+          document.getElementById('promoApplied').style.display = 'flex';
+          document.getElementById('promoInput').value = '';
+          updateTotals();
+        } else {
+          document.getElementById('promoInput').style.borderColor = '#f87171';
+          setTimeout(() => { document.getElementById('promoInput').style.borderColor = ''; }, 1500);
+        }
+      });
+      document.getElementById('promoRemoveBtn').addEventListener('click', () => {
+        promoActive = false;
+        document.getElementById('promoApplied').style.display = 'none';
+        updateTotals();
+      });
+
+      // === Form validation & Place Order ===
+      const requiredFields = ['firstName','lastName','email','phone','address','city','zip','cardNumber','cardName','expiry','cvv'];
+
+      function validateFields() {
+        let valid = true;
+        requiredFields.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (!el.value.trim()) {
+            el.style.borderColor = '#f87171';
+            valid = false;
+          } else {
+            el.style.borderColor = '';
+          }
+        });
+        // Email check
+        const em = document.getElementById('email');
+        if (em && em.value && !em.value.includes('@')) { em.style.borderColor='#f87171'; valid=false; }
+        return valid;
+      }
+
+      // Clear red border on input
+      requiredFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', () => { el.style.borderColor = ''; });
+      });
+
+      document.getElementById('place-order-btn').addEventListener('click', () => {
+        if (!cart) { alert('Your bag is empty. Please go back to the customizer.'); return; }
+        if (!validateFields()) {
+          const first = document.querySelector('[style*="border-color: rgb(248, 113, 113)"]');
+          if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+          return;
+        }
+        // Save order data
+        const sel = document.querySelector('input[name="delivery"]:checked');
+        const shippingCost = sel ? parseFloat(sel.value) : 0;
+        const disc = promoActive ? Math.round(subtotal * 0.15) : 0;
+        const taxable = subtotal - disc + shippingCost;
+        const tax = Math.round(taxable * 0.08);
+        const total = taxable + tax;
+        const orderData = {
+          ...cart,
+          shipping: shippingCost,
+          discount: disc,
+          tax: tax,
+          total: total,
+          orderNumber: 'LP-' + Date.now().toString(36).toUpperCase(),
+          customerName: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+          email: document.getElementById('email').value,
+          city: document.getElementById('city').value,
+          state: document.getElementById('state').value,
+          zip: document.getElementById('zip').value
+        };
+        localStorage.setItem('laperlette_order', JSON.stringify(orderData));
+        localStorage.removeItem('laperlette_cart');
+        window.location.href = 'orderconfirmation.html';
+      });
+    });
+  </script>
+</body>
+</html>
